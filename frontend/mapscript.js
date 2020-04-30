@@ -1,11 +1,40 @@
+const express = require("express")
+const fs = require("fs")
+const request = require('request');
+const port = 3000
+
+var allcount =[]
+var contents = fs.readFileSync("countrylist.txt", 'utf8');
+contents = JSON.parse(contents)
+  
+contents.forEach(ok2 =>{
+
+search = bb.concat(toString(ok2))
+  request(`https://api.covid19api.com/live/country/${ok2}`, (req , res)=> { 
+    
+   
+    var data = JSON.parse(res.body)
+    const ch =data[1]
+    var count = []
+    if(res.statusCode == 200)
+    {
+    if(ch != undefined)
+    {
+      lats = data[1]["Lat"]
+      longs = data[1]["Lon"]
+      confermed = data[1]["Confirmed"]
+      count = [lats , longs ,confermed]
+    }
+
+    allcount.push(count)
+}
+
+  });
+})
+
+
   function initMap() {
-    var locations = [
-     // ['Bondi Beach', -33.890542, 151.274856, 4],
-      ['Coogee Beach', -33.923036, 151.259052, 5],
-      ['Cronulla Beach', -34.028249, 151.157507, 3],
-      ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
-      ['Maroubra Beach', -33.950198, 151.259302, 1]
-    ];
+  
 
         var myLatLng = {lat: -25.363, lng: 131.044};
 
@@ -19,9 +48,9 @@
 
     var marker, i;
 
-    for (i = 0; i < locations.length; i++) {  
+    for (i = 0; i < allcount.length; i++) {  
       marker = new google.maps.Marker({
-        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        position: new google.maps.LatLng(allcount[i][0], allcount[i][1]),
         map: map
       });
 
